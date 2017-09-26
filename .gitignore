@@ -60,5 +60,6 @@ typings/
 /.vscode/
 /node_modules/
 *.json
+!package.json
 memo.txt
 setENV.bat
