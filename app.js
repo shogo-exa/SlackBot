@@ -2,6 +2,8 @@ var request = require('request')
 var restify = require('restify');
 var builder = require('botbuilder');
 var WebClient = require('@slack/client').WebClient;
+var async = require('async')
+
 const loger = require('./log.js');
 
 //=========================================================
@@ -84,22 +86,22 @@ mbfBot.on('conversationUpdate', function (message) {
     }
 });
 
-function makeMemberInfo(userMap, timeStampKey) {
+function makeMemberInfo(userMap) {
     userMap.map((m) => {
-        loger.log("userMap", m)
-        m.id = m.id.split(":")[0]
-        loger.log("Retrieve Information From : ", m.id)
-        m.email = slack.users.info(m.id, (err, res) => {
-            if (err) {
-                loger.log("Get User Info : Failed", err);
-            } else {
-                console.log('Get User Info : Success', res);
-            }
-            return res.user.prfile.email;
-        })
+        async.series([(next) => {
+            loger.log("userMap", m);
+            m.id = m.id.split(":")[0];
+            next();
+        }, (next) => {
+            loger.log("Retrieve Information From : ", m.id);
+            slack.users.info(m.id, (err, res) => {
+                m.email = res.user.prfile.email;
+                next();
+            })
+        }])
     })
-    loger.log("maked Info", userMap)
-    return userMap
+    loger.log("maked Info", userMap);
+    return userMap;
 }
 
 function getTimeStamp() {
