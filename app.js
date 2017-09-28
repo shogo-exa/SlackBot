@@ -67,7 +67,7 @@ mbfBot.on('conversationUpdate', function (message) {
             .address(message.address)
             .text('いらっしゃいませー ' + membersAdded + ' さん');
 
-        mbf.send(reply);
+        mbfBot.send(reply);
     }
     if (message.membersRemoved) {
         loger.log("join Member", message);
@@ -86,7 +86,9 @@ mbfBot.on('conversationUpdate', function (message) {
 
 function makeMemberInfo(userMap, timeStampKey) {
     userMap.map((m) => {
+        loger.log("userMap", m)
         m.id = m.id.split(":")[0]
+        loger.log("Retrieve Information From : ", m.id)
         m.email = slack.users.info(m.id, (err, res) => {
             return res.user.prfile.email;
         })
