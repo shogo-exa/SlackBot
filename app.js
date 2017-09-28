@@ -90,6 +90,11 @@ function makeMemberInfo(userMap, timeStampKey) {
         m.id = m.id.split(":")[0]
         loger.log("Retrieve Information From : ", m.id)
         m.email = slack.users.info(m.id, (err, res) => {
+            if (err) {
+                loger.log("Get User Info : Failed", err);
+            } else {
+                console.log('Get User Info : Success', res);
+            }
             return res.user.prfile.email;
         })
     })
