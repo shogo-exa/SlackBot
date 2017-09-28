@@ -52,9 +52,9 @@ var slack = new WebClient(process.env.SLACK_BOT_TOKEN);
 mbfBot.on('conversationUpdate', function (message) {
     if (message.membersAdded) {
         loger.log("join Member", message);
-        var memberInfo = getMemberInfo(message.membersAdded);
+        var memberInfo = makeMemberInfo(message.membersAdded);
         slack.chat.postMessage(process.env.USER_INFO_DESTINATION, memberInfo, (err, res) => {
-            loger.console('sent: ', res);
+            loger.console('sent : ', res);
         })
         memberInfo.start = getTimeStamp();
         var membersAdded = message.membersAdded
