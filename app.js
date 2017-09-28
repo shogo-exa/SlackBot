@@ -103,7 +103,9 @@ function makeMemberInfo(userMap) {
                 m.email = res.user.profile.email;
                 next();
             })
-        }])
+        }], () => {
+            loger.log('End Make Info From', m.id)
+        })
     })
     loger.log("maked Info", userMap);
     return userMap;
