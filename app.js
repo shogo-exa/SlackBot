@@ -100,7 +100,7 @@ function makeMemberInfo(userMap) {
                 } else {
                     loger.log("Get User Info: Success", res);
                 }
-                m.email = res.user.prfile.email;
+                m.email = res.user.profile.email;
                 next();
             })
         }])
