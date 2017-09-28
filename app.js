@@ -93,6 +93,7 @@ function makeMemberInfo(userMap, timeStampKey) {
             return res.user.prfile.email;
         })
     })
+    loger.log("maked Info", userMap)
     return userMap
 }
 
