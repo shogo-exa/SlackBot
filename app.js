@@ -101,7 +101,7 @@ mbfBot.on('conversationUpdate', function (message) {
         var membersAdded = message.membersAdded
             .map((m) => {
                 if (m.id === message.address.bot.id.split(":")[0]) {
-                    return null;
+                    return false;
                 }
                 return m.name
             });
