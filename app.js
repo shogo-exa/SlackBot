@@ -108,7 +108,7 @@ mbfBot.on('conversationUpdate', function (message) {
             .address(message.address)
             .text('いらっしゃいませー ' + membersAdded + ' さん');
         mbfBot.send(reply);
-        reply.text("講座に関する質問はこのチャンネルにしてください")
+        reply.text("講座に関する質問は各チャネルにしてください")
         mbfBot.send(reply)
 
     }
@@ -123,7 +123,7 @@ mbfBot.on('conversationUpdate', function (message) {
             .join(', ');
         var reply = new builder.Message()
             .address(message.address)
-            .text('ばいばーい' + membersRemoved);
+            .text('おつかれさまでしたー' + membersRemoved + "さん");
         mbfBot.send(reply);
     }
 });
