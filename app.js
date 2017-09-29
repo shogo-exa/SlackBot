@@ -54,11 +54,7 @@ var slack = new WebClient(process.env.SLACK_BOT_TOKEN);
 mbfBot.on('conversationUpdate', function (message) {
     if (message.membersAdded) {
         loger.log("join Member", message);
-        var memberInfo = makeMemberInfo(message.membersAdded);
-        slack.chat.postMessage(process.env.USER_INFO_DESTINATION, memberInfo, (err, res) => {
-            loger.console('sent : ', res);
-        })
-        memberInfo.start = getTimeStamp();
+        snedMemberInfo(message.membersAdded, true);
         var membersAdded = message.membersAdded
             .map((m) => {
                 var isSelf = m.id === message.address.bot.id;
@@ -72,7 +68,9 @@ mbfBot.on('conversationUpdate', function (message) {
         mbfBot.send(reply);
     }
     if (message.membersRemoved) {
-        loger.log("join Member", message);
+        loger.log("leave Member", message);
+        snedMemberInfo(message.membersAdded, false);
+
         var membersRemoved = message.membersRemoved
             .map((m) => {
                 var isSelf = m.id === message.address.bot.id;
@@ -86,12 +84,13 @@ mbfBot.on('conversationUpdate', function (message) {
     }
 });
 
-function makeMemberInfo(userMap) {
+function snedMemberInfo(userMap, isStart) {
     userMap.map((m) => {
         async.series([(next) => {
             loger.log("userMap", m);
             m.id = m.id.split(":")[0];
             next();
+
         }, (next) => {
             loger.log("Retrieve Information From : ", m.id);
             slack.users.info(m.id, (err, res) => {
@@ -101,10 +100,17 @@ function makeMemberInfo(userMap) {
                     loger.log("Get User Info: Success", res);
                 }
                 m.email = res.user.profile.email;
+                if (isStart) m.start = getTimeStamp();
+                else m.end = getTimeStamp();
                 next();
+
             })
         }], () => {
-            loger.log('End Make Info From', m.id)
+            loger.log('End Make Info from', m)
+            var str = JSON.stringify(m, undefined, 4);
+            slack.chat.postMessage(process.env.USER_INFO_DESTINATION, str, (err, res) => {
+                loger.console('send : ', res);
+            })
         })
     })
     loger.log("maked Info", userMap);
