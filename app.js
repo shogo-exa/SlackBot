@@ -134,15 +134,16 @@ mbfBot.on('conversationUpdate', function (message) {
 
 function snedMemberInfo(message, isStart) {
     message.membersAdded.map((m) => {
-        async.series([(next) => {
+        async.series([(next) => { // api無しで取得できる情報を取得
             loger.log("userMap", m);
             m.id = m.id.split(":")[0];
-            m.channel = message.sourceEvent.event.channel
+            m.channel = {}
+            m.channel.id = message.sourceEvent.event.channel
             if (isStart) m.start = getTimeStamp();
             else m.end = getTimeStamp();
             next();
 
-        }, (next) => {
+        }, (next) => {// apiを使ってユーザー情報を取得
             loger.log("Retrieve Information From : ", m.id);
             slack.users.info(m.id, (err, res) => {
                 if (err) {
@@ -153,6 +154,16 @@ function snedMemberInfo(message, isStart) {
                 m.email = res.user.profile.email;
                 next();
 
+            })
+        }, (next) => {
+            slack.channels.info(m.channel.id, (err, res) => {
+                if (err) {
+                    loger.log("Get User Info: Failed", err);
+                } else {
+                    loger.log("Get User Info: Success", res);
+                }
+                m.channel.name = res.channel.name;
+                next();
             })
         }], () => {
             loger.log('End Make Info from', m)
