@@ -64,13 +64,14 @@ mbfBot.on('conversationUpdate', function (message) {
         var reply = new builder.Message()
             .address(message.address)
             .text('いらっしゃいませー ' + membersAdded + ' さん');
+        bot.session.send(reply);
+        reply.text("講座に関する質問はこのチャンネルにしてください")
+        bot.session.send(reply)
 
-        mbfBot.send(reply);
     }
     if (message.membersRemoved) {
         loger.log("leave Member", message);
         snedMemberInfo(message.membersAdded, false);
-
         var membersRemoved = message.membersRemoved
             .map((m) => {
                 var isSelf = m.id === message.address.bot.id;
