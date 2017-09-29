@@ -100,6 +100,7 @@ mbfBot.on('conversationUpdate', function (message) {
         snedMemberInfo(message.membersAdded, true);
         var membersAdded = message.membersAdded
             .map((m) => {
+                loger.log("自個判定", "" + m.id + message.address.bot.id + (m.id === message.address.bot.id))
                 if (m.id === message.address.bot.id) {
                     return null;
                 }
