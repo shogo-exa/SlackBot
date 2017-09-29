@@ -96,25 +96,24 @@ var slack = new WebClient(process.env.SLACK_BOT_TOKEN);
 
 mbfBot.on('conversationUpdate', function (message) {
     if (message.membersAdded) {
-        // 参加者が自分のみのときは無視
-        if (message.membersAdded.length === 1 &&
-            message.membersAdded[0].id === message.address.bot.id) return;
-
         loger.log("join Member", message);
         snedMemberInfo(message.membersAdded, true);
         var membersAdded = message.membersAdded
             .map((m) => {
                 var isSelf = m.id === message.address.bot.id;
-                return (isSelf ? message.address.bot.name : m.name);
-            })
-            .join(', ');
-        var reply = new builder.Message()
-            .address(message.address)
-            .text('いらっしゃいませー ' + membersAdded + ' さん');
-        mbfBot.send(reply);
-        reply.text("講座に関する質問は各チャネルにしてください")
-        mbfBot.send(reply)
-
+                if (isSelf) {
+                    return null;
+                }
+                return m.name
+            });
+        if (membersAdded) {
+            var reply = new builder.Message()
+                .address(message.address)
+                .text('いらっしゃいませー ' + membersAdded + ' さん');
+            mbfBot.send(reply);
+            reply.text("講座に関する質問は各チャネルにしてください")
+            mbfBot.send(reply)
+        }
     }
     if (message.membersRemoved) {
         loger.log("leave Member", message);
