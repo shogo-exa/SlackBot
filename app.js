@@ -28,7 +28,7 @@ var mbfBot = module.exports = new builder.UniversalBot(connector, [
     (session, args, next) => {
         loger.log("メッセージ", session.message)
         var isReport = false;
-        if (session.message.text.substring(0, 4) == "進捗報告") isReport = true;
+        if (session.message.text == "進捗報告") isReport = true;
         if (isReport) {
             loger.log("進捗報告", session)
             session.send("進捗報告を受けます");
@@ -165,7 +165,7 @@ function snedMemberInfo(userMap, isStart) {
 
 function sendReport(session) {
     var report = {};
-    report.id = session.message.user.id.split(":")[0];
+    report.id = getUserIdFromSession(session);
     report.name = session.message.user.name;
     report.time = getTimeStamp();
     report.practice = session.privateConversationData.practice;
@@ -183,6 +183,10 @@ function sendReport(session) {
             loger.console('send : ', res);
         })
     })
+}
+
+function getUserIdFromSession(session) {
+    return session.message.user.id.split(":")[0];
 }
 
 function getTimeStamp() {
