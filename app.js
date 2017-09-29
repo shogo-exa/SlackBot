@@ -96,6 +96,10 @@ var slack = new WebClient(process.env.SLACK_BOT_TOKEN);
 
 mbfBot.on('conversationUpdate', function (message) {
     if (message.membersAdded) {
+        // 参加者が自分のみのときは無視
+        if (message.membersAdded.length === 1 &&
+            message.membersAdded[0].id === message.address.bot.id) return;
+
         loger.log("join Member", message);
         snedMemberInfo(message.membersAdded, true);
         var membersAdded = message.membersAdded
