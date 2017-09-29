@@ -154,7 +154,7 @@ function snedMemberInfo(userMap, isStart) {
         }], () => {
             loger.log('End Make Info from', m)
             var str = JSON.stringify(m, undefined, 4);
-            slack.chat.postMessage(process.env.USER_INFO_DESTINATION, str, (err, res) => {
+            slack.chat.postMessage(process.env.USER_INFO_DESTINATION, "入退室者情報" + str, (err, res) => {
                 loger.console('send : ', res);
             })
         })
@@ -179,7 +179,7 @@ function sendReport(session) {
         }
         report.email = res.user.profile.email;
         var str = JSON.stringify(report, undefined, 4);
-        slack.chat.postMessage(process.env.USER_INFO_DESTINATION, str, (err, res) => {
+        slack.chat.postMessage(process.env.USER_INFO_DESTINATION, "進捗報告" + str, (err, res) => {
             loger.console('send : ', res);
         })
     })
