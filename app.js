@@ -26,27 +26,31 @@ server.post('/', connector.listen()); // 例：https://xxx.co.jp/
 
 var mbfBot = module.exports = new builder.UniversalBot(connector, [
     (session, args, next) => {
-    },
-    (session, res, next) => {
-        const userSelect = res.response;
-        switch (userSelect) {
-            case 'MultiDialog':
-                break;
-
-            case 'HeroCard':
-                break;
-
-            case 'SigninCard':
-                break;
-
-            case 'Image':
-                break;
-
-            default:
-
+        var isReport = false;
+        if (session.message.substring(0, 3) == "進捗報告") isReport = true;
+        if (isReport) {
+            loger.log("進捗報告", session)
+            session.send("進捗報告を受けます");
         }
-    },
-]);
+    }]);
+mbfBot.dialog("Report", [
+    (session, args, next) => {
+        var chatData = new builder.Message(session);
+        chatData.attachmentLayout(builder.AttachmentLayout.carousel);
+        chatData.attachments([
+            new builder.HeroCard(session)
+                .title('講座選択')
+                .subtitle('音楽')
+                .text('どのジャンルが好きですか？')
+                .buttons([
+                    builder.CardAction.imBack(session, 'Rock', 'Rock'),
+                    builder.CardAction.imBack(session, 'J-Pop', 'J-Pop'),
+                    builder.CardAction.imBack(session, 'Jazz', 'Jazz')
+                ])
+        ]);
+    }
+])
+
 // bot.library(require('./Cards').createLibrary());
 
 var slack = new WebClient(process.env.SLACK_BOT_TOKEN);
