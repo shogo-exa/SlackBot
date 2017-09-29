@@ -44,6 +44,7 @@ var mbfBot = module.exports = new builder.UniversalBot(connector, [
         session.send("セクション：" + session.privateConversationData.section)
         session.send("レクチャー：" + session.privateConversationData.recture)
 
+        sendReport();
         session.endConversation();
     }]);
 mbfBot.dialog("Report", [
@@ -108,9 +109,9 @@ mbfBot.on('conversationUpdate', function (message) {
         var reply = new builder.Message()
             .address(message.address)
             .text('いらっしゃいませー ' + membersAdded + ' さん');
-        bot.send(reply);
+        mbfBot.send(reply);
         reply.text("講座に関する質問はこのチャンネルにしてください")
-        bot.send(reply)
+        mbfBot.send(reply)
 
     }
     if (message.membersRemoved) {
@@ -160,6 +161,28 @@ function snedMemberInfo(userMap, isStart) {
     })
     loger.log("maked Info", userMap);
     return userMap;
+}
+
+function sendReport(session) {
+    var report = {};
+    report.id = session.message.user.id.split(":")[0];
+    report.name = session.message.user.name;
+    report.time = getTimeStamp();
+    report.practice = session.privateConversationData.practice;
+    report.section = session.privateConversationData.section;
+    report.recture = session.privateConversationData.recture;
+    slack.users.info(id, (err, res) => {
+        if (err) {
+            loger.log("Get User Info: Failed", err);
+        } else {
+            loger.log("Get User Info: Success", res);
+        }
+        report.email = res.user.profile.email;
+        var str = JSON.stringify(report, undefined, 4);
+        slack.chat.postMessage(process.env.USER_INFO_DESTINATION, str, (err, res) => {
+            loger.console('send : ', res);
+        })
+    })
 }
 
 function getTimeStamp() {
