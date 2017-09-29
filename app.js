@@ -100,8 +100,7 @@ mbfBot.on('conversationUpdate', function (message) {
         snedMemberInfo(message.membersAdded, true);
         var membersAdded = message.membersAdded
             .map((m) => {
-                var isSelf = m.id === message.address.bot.id;
-                if (isSelf) {
+                if (m.id === message.address.bot.id) {
                     return null;
                 }
                 return m.name
