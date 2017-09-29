@@ -26,10 +26,8 @@ server.post('/', connector.listen()); // 例：https://xxx.co.jp/
 
 var mbfBot = module.exports = new builder.UniversalBot(connector, [
     (session, args, next) => {
-        loger.log("メッセージ", session.message)
-        var isReport = false;
-        if (session.message.text == "進捗報告") isReport = true;
-        if (isReport) {
+        loger.log("メッセージ", session.message);
+        if (session.message.text == "進捗報告") {
             loger.log("進捗報告", session)
             session.send("進捗報告を受けます");
             session.beginDialog("Report");
