@@ -97,16 +97,17 @@ var slack = new WebClient(process.env.SLACK_BOT_TOKEN);
 mbfBot.on('conversationUpdate', function (message) {
     if (message.membersAdded) {
         loger.log("join Member", message);
+        var isSelf = false;
         snedMemberInfo(message.membersAdded, true);
         var membersAdded = message.membersAdded
             .map((m) => {
                 if (m.id === message.address.bot.id.split(":")[0]) {
-                    return false;
+                    isSelf = true;
                 }
                 return m.name
             });
         loger.log("members", membersAdded);
-        if (membersAdded) {
+        if (!isSelf && membersAdded) {
             var reply = new builder.Message()
                 .address(message.address)
                 .text('いらっしゃいませー ' + membersAdded + ' さん');
