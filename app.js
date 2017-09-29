@@ -43,7 +43,7 @@ var mbfBot = module.exports = new builder.UniversalBot(connector, [
         session.send("講座：" + session.privateConversationData.practice)
         session.send("セクション：" + session.privateConversationData.section)
         session.send("レクチャー：" + session.privateConversationData.recture)
-        
+
         session.endConversation();
     }]);
 mbfBot.dialog("Report", [
@@ -85,7 +85,7 @@ mbfBot.dialog("Report", [
     (session, results, next) => {
         loger.log("レクチャー数", results);
 
-        sessin.privateConversationData.recture = results.response;
+        session.privateConversationData.recture = results.response;
 
         session.endDialog();
     }
