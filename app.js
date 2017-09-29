@@ -106,6 +106,7 @@ mbfBot.on('conversationUpdate', function (message) {
                 }
                 return m.name
             });
+        loger.log("members", membersAdded);
         if (membersAdded) {
             var reply = new builder.Message()
                 .address(message.address)
