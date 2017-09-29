@@ -98,7 +98,7 @@ mbfBot.on('conversationUpdate', function (message) {
     if (message.membersAdded) {
         loger.log("join Member", message);
         var isSelf = false;
-        snedMemberInfo(message.membersAdded, true);
+        snedMemberInfo(message, true);
         var membersAdded = message.membersAdded
             .map((m) => {
                 if (m.id === message.address.bot.id.split(":")[0]) {
@@ -118,7 +118,7 @@ mbfBot.on('conversationUpdate', function (message) {
     }
     if (message.membersRemoved) {
         loger.log("leave Member", message);
-        snedMemberInfo(message.membersAdded, false);
+        snedMemberInfo(message, false);
         var membersRemoved = message.membersRemoved
             .map((m) => {
                 var isSelf = m.id === message.address.bot.id;
@@ -132,11 +132,14 @@ mbfBot.on('conversationUpdate', function (message) {
     }
 });
 
-function snedMemberInfo(userMap, isStart) {
-    userMap.map((m) => {
+function snedMemberInfo(message, isStart) {
+    message.membersAdded.map((m) => {
         async.series([(next) => {
             loger.log("userMap", m);
             m.id = m.id.split(":")[0];
+            m.channel = message.sourceEvent.event.channel
+            if (isStart) m.start = getTimeStamp();
+            else m.end = getTimeStamp();
             next();
 
         }, (next) => {
@@ -148,8 +151,6 @@ function snedMemberInfo(userMap, isStart) {
                     loger.log("Get User Info: Success", res);
                 }
                 m.email = res.user.profile.email;
-                if (isStart) m.start = getTimeStamp();
-                else m.end = getTimeStamp();
                 next();
 
             })
@@ -161,8 +162,6 @@ function snedMemberInfo(userMap, isStart) {
             })
         })
     })
-    loger.log("maked Info", userMap);
-    return userMap;
 }
 
 function sendReport(session) {
