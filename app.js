@@ -39,12 +39,12 @@ var mbfBot = module.exports = new builder.UniversalBot(connector, [
         }
     },
     (session, results, next) => {
-        session.send("下記進捗結果を受け付けました")
-        session.send("講座：" + session.privateConversationData.practice)
-        session.send("セクション：" + session.privateConversationData.section)
-        session.send("レクチャー：" + session.privateConversationData.recture)
+        session.send("下記進捗結果を受け付けました");
+        session.send("講座：" + session.privateConversationData.practice);
+        session.send("セクション：" + session.privateConversationData.section);
+        session.send("レクチャー：" + session.privateConversationData.recture);
 
-        sendReport();
+        sendReport(session);
         session.endConversation();
     }]);
 mbfBot.dialog("Report", [
