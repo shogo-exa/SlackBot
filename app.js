@@ -32,7 +32,14 @@ var mbfBot = module.exports = new builder.UniversalBot(connector, [
         if (isReport) {
             loger.log("進捗報告", session)
             session.send("進捗報告を受けます");
+            session.beginDialog("Report");
         }
+        else {
+            session.endConversation();
+        }
+    },
+    (session, args, next) => {
+        session.endConversation();
     }]);
 mbfBot.dialog("Report", [
     (session, args, next) => {
@@ -41,14 +48,21 @@ mbfBot.dialog("Report", [
         chatData.attachments([
             new builder.HeroCard(session)
                 .title('講座選択')
-                .subtitle('音楽')
-                .text('どのジャンルが好きですか？')
+                .text('どの講座を受けましたか?')
                 .buttons([
-                    builder.CardAction.imBack(session, 'Rock', 'Rock'),
-                    builder.CardAction.imBack(session, 'J-Pop', 'J-Pop'),
-                    builder.CardAction.imBack(session, 'Jazz', 'Jazz')
+                    builder.CardAction.imBack(session, 'practice1', 'アプリケーション開発者のための機械学習実践講座'),
+                    builder.CardAction.imBack(session, 'practice2', 'みんなのAI講座 ゼロからPythonで学ぶ人工知能と機械学習'),
+                    builder.CardAction.imBack(session, 'practice3', 'Pythonで機械学習 : scikit-learnで学ぶ識別入門'),
+                    builder.CardAction.imBack(session, 'practice4', 'ゼロから作るニューラルネットワーク【Python3 + NumPy】'),
+                    builder.CardAction.imBack(session, 'practice5', '【4日で体験】TensorFlow x Python3で学ぶディープラーニング')
                 ])
         ]);
+        builder.Prompts.text(session, chatData);
+    },
+    (session, results, next) => {
+        loger.log("選択された講座", resuts)
+        const practice = results.response;
+        session.endDialogWithResult({ response: practice });
     }
 ])
 
@@ -69,9 +83,9 @@ mbfBot.on('conversationUpdate', function (message) {
         var reply = new builder.Message()
             .address(message.address)
             .text('いらっしゃいませー ' + membersAdded + ' さん');
-        bot.session.send(reply);
+        bot.send(reply);
         reply.text("講座に関する質問はこのチャンネルにしてください")
-        bot.session.send(reply)
+        bot.send(reply)
 
     }
     if (message.membersRemoved) {
