@@ -171,7 +171,7 @@ function sendReport(session) {
     report.practice = session.privateConversationData.practice;
     report.section = session.privateConversationData.section;
     report.recture = session.privateConversationData.recture;
-    slack.users.info(id, (err, res) => {
+    slack.users.info(report.id, (err, res) => {
         if (err) {
             loger.log("Get User Info: Failed", err);
         } else {
