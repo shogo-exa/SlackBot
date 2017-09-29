@@ -38,11 +38,22 @@ var mbfBot = module.exports = new builder.UniversalBot(connector, [
             session.endConversation();
         }
     },
-    (session, args, next) => {
+    (session, results, next) => {
+        session.send("下記進捗結果を受け付けました")
+        session.send("講座：" + session.privateConversationData.practice)
+        session.send("セクション：" + session.privateConversationData.section)
+        session.send("レクチャー：" + session.privateConversationData.recture)
+        
         session.endConversation();
     }]);
 mbfBot.dialog("Report", [
     (session, args, next) => {
+        const pra1 = 'アプリケーション開発者のための機械学習実践講座';
+        const pra2 = 'みんなのAI講座 ゼロからPythonで学ぶ人工知能と機械学習';
+        const pra3 = 'Pythonで機械学習 : scikit-learnで学ぶ識別入門';
+        const pra4 = 'ゼロから作るニューラルネットワーク【Python3 + NumPy】';
+        const pra5 = '【4日で体験】TensorFlow x Python3で学ぶディープラーニン';
+
         var chatData = new builder.Message(session);
         chatData.attachmentLayout(builder.AttachmentLayout.carousel);
         chatData.attachments([
@@ -50,19 +61,33 @@ mbfBot.dialog("Report", [
                 .title('講座選択')
                 .text('どの講座を受けましたか?')
                 .buttons([
-                    builder.CardAction.imBack(session, 'practice1', 'アプリケーション開発者のための機械学習実践講座'),
-                    builder.CardAction.imBack(session, 'practice2', 'みんなのAI講座 ゼロからPythonで学ぶ人工知能と機械学習'),
-                    builder.CardAction.imBack(session, 'practice3', 'Pythonで機械学習 : scikit-learnで学ぶ識別入門'),
-                    builder.CardAction.imBack(session, 'practice4', 'ゼロから作るニューラルネットワーク【Python3 + NumPy】'),
-                    builder.CardAction.imBack(session, 'practice5', '【4日で体験】TensorFlow x Python3で学ぶディープラーニング')
+                    builder.CardAction.imBack(session, pra1, pra1),
+                    builder.CardAction.imBack(session, pra2, pra2),
+                    builder.CardAction.imBack(session, pra3, pra3),
+                    builder.CardAction.imBack(session, pra4, pra4),
+                    builder.CardAction.imBack(session, pra5, pra5)
                 ])
         ]);
         builder.Prompts.text(session, chatData);
     },
     (session, results, next) => {
         loger.log("選択された講座", results)
-        const practice = results.response;
-        session.endDialogWithResult({ response: practice });
+        session.privateConversationData.practice = results.response;
+
+        builder.Prompts.number(session, "セクションはどこまで進みましたか?")
+    },
+    (session, results, next) => {
+        loger.log("セクション数の回答", results);
+        session.privateConversationData.section = results.response;
+
+        builder.Prompts.number(session, "レクチャーはどこまで進みましたか？");
+    },
+    (session, results, next) => {
+        loger.log("レクチャー数", results);
+
+        sessin.privateConversationData.recture = results.response;
+
+        session.endDialog();
     }
 ])
 
