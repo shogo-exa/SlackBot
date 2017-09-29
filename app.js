@@ -60,7 +60,7 @@ mbfBot.dialog("Report", [
         builder.Prompts.text(session, chatData);
     },
     (session, results, next) => {
-        loger.log("選択された講座", resuts)
+        loger.log("選択された講座", results)
         const practice = results.response;
         session.endDialogWithResult({ response: practice });
     }
