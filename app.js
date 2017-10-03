@@ -73,13 +73,13 @@ mbfBot.dialog("Report", [
         loger.log("選択された講座", results)
         session.privateConversationData.practice = results.response;
 
-        builder.Prompts.number(session, "セクションは何番まで進みましたか?")
+        builder.Prompts.number(session, "セクションは何番まで進みましたか?(半角数字で入力)")
     },
     (session, results, next) => {
         loger.log("セクション数の回答", results);
         session.privateConversationData.section = results.response;
 
-        builder.Prompts.number(session, "レクチャーは何番まで進みましたか？");
+        builder.Prompts.number(session, "レクチャーは何番まで進みましたか？(半角数字で入力)");
     },
     (session, results, next) => {
         loger.log("レクチャー数", results);
