@@ -156,7 +156,7 @@ function snedMemberInfo(message, map, isStart) {
             loger.log("userMap", m);
             m.id = m.id.split(":")[0];
             m.channel = {}
-            m.channel.id = message.sourceEvent.SlackMessage.event.channel
+            m.channel.id = message.sourceEvent.SlackMessage.channel
             if (isStart) m.start = getTimeStamp();
             else m.end = getTimeStamp();
             next();
