@@ -102,15 +102,21 @@ var slack = new WebClient(process.env.SLACK_BOT_TOKEN);
 
 mbfBot.on('conversationUpdate', function (message) {
     if (message.membersAdded) {
+        var reply = new builder.Message()
+            .address(message.address)
+
         switch (message.sourceEvent.SlackMessage.event.channel) {
             case "C75NK5EG3":
-                mbfBot.send("generalに人増えた")
+                reply.text("generalに人増えた");
+                mbfBot.send(reply);
                 break;
             case "C75NK5ERZ":
-                mbfBot.send("randomに人増えた")
+                reply.text("randomに人増えた");
+                mbfBot.send(reply);
                 break;
             case "C770UK403":
-                mbfBot.send("testに人増えた")
+                reply.text("testに人増えた");
+                mbfBot.send(reply);
                 break;
         }
 
@@ -126,9 +132,7 @@ mbfBot.on('conversationUpdate', function (message) {
             });
         loger.log("members", membersAdded);
         if (!isSelf && membersAdded) {
-            var reply = new builder.Message()
-                .address(message.address)
-                .text('いらっしゃいませー ' + membersAdded + ' さん');
+            reply.text('いらっしゃいませー ' + membersAdded + ' さん');
             mbfBot.send(reply);
             reply.text("講座に関する質問は各チャネルにしてください")
             mbfBot.send(reply)
@@ -143,9 +147,7 @@ mbfBot.on('conversationUpdate', function (message) {
                 return (isSelf ? message.address.bot.name : m.name);
             })
             .join(', ');
-        var reply = new builder.Message()
-            .address(message.address)
-            .text('おつかれさまでしたー' + membersRemoved + "さん");
+        reply.text('おつかれさまでしたー' + membersRemoved + "さん");
         mbfBot.send(reply);
     }
 });
