@@ -29,7 +29,8 @@ var mbfBot = module.exports = new builder.UniversalBot(connector, [
         loger.log("メッセージ", session.message);
         if (session.message.text == "進捗報告") {
             loger.log("進捗報告", session)
-            session.send("進捗報告を受けます");
+            session.send("進捗報告を受け付けます");
+            session.send("中止する場合は「cancel」と入力してください")
             session.beginDialog("Report");
         }
         else {
@@ -37,12 +38,19 @@ var mbfBot = module.exports = new builder.UniversalBot(connector, [
         }
     },
     (session, results, next) => {
-        session.send("下記進捗結果を受け付けました");
-        session.send("講座：" + session.privateConversationData.practice);
-        session.send("セクション：" + session.privateConversationData.section);
-        session.send("レクチャー：" + session.privateConversationData.recture);
+        const privateData = session.privateConversationData
+        if (privateData.practice && privateData.section && privateData.recture) {
+            session.send("下記進捗結果を受け付けました");
+            session.send("講座：" + session.privateConversationData.practice);
+            session.send("セクション：" + session.privateConversationData.section);
+            session.send("レクチャー：" + session.privateConversationData.recture);
+            sendReport(session);
+        }
+        else {
+            session.send("進捗報告を中止しました。");
+            session.send("再度報告するときは最初から行ってください");
+        }
 
-        sendReport(session);
         session.endConversation();
     }]);
 mbfBot.dialog("Report", [
@@ -88,7 +96,10 @@ mbfBot.dialog("Report", [
 
         session.endDialog();
     }
-])
+]).cancelAction('cancelProgress', "中止しました", {
+    matches: /^cancel/i,
+    confirmPrompt: "進捗報告を中止しますか？ y or n"
+});
 
 // bot.library(require('./Cards').createLibrary());
 
@@ -155,7 +166,7 @@ function snedMemberInfo(message, isStart) {
                 next();
 
             })
-        }, (next) => {
+        }, (next) => { //APIを使ってチャネル情報を取得
             slack.channels.info(m.channel.id, (err, res) => {
                 if (err) {
                     loger.log("Get User Info: Failed", err);
