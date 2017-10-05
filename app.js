@@ -116,7 +116,7 @@ mbfBot.on('conversationUpdate', function (message) {
 
         loger.log("join Member", message);
         var isSelf = false;
-        snedMemberInfo(message, true);
+        snedMemberInfo(message, message.membersAdded, true);
         var membersAdded = message.membersAdded
             .map((m) => {
                 if (m.id === message.address.bot.id.split(":")[0]) {
@@ -136,7 +136,7 @@ mbfBot.on('conversationUpdate', function (message) {
     }
     if (message.membersRemoved) {
         loger.log("leave Member", message);
-        snedMemberInfo(message, false);
+        snedMemberInfo(message, message.membersRemoved, false);
         var membersRemoved = message.membersRemoved
             .map((m) => {
                 var isSelf = m.id === message.address.bot.id;
@@ -150,8 +150,8 @@ mbfBot.on('conversationUpdate', function (message) {
     }
 });
 
-function snedMemberInfo(message, isStart) {
-    message.membersAdded.map((m) => {
+function snedMemberInfo(message, map, isStart) {
+    map.map((m) => {
         async.series([(next) => { // api無しで取得できる情報を取得
             loger.log("userMap", m);
             m.id = m.id.split(":")[0];
