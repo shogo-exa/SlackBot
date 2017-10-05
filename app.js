@@ -46,11 +46,6 @@ var mbfBot = module.exports = new builder.UniversalBot(connector, [
             session.send("レクチャー：" + session.privateConversationData.recture);
             sendReport(session);
         }
-        else {
-            session.send("進捗報告を中止しました。");
-            session.send("再度報告するときは最初から行ってください");
-        }
-
         session.endConversation();
     }]);
 mbfBot.dialog("Report", [
@@ -107,6 +102,18 @@ var slack = new WebClient(process.env.SLACK_BOT_TOKEN);
 
 mbfBot.on('conversationUpdate', function (message) {
     if (message.membersAdded) {
+        switch (message.sourceEvent.SlackMessage.event.channel) {
+            case "C75NK5EG3":
+                mbfBot.send("generalに人増えた")
+                break;
+            case "C75NK5ERZ":
+                mbfBot.send("randomに人増えた")
+                break;
+            case "C770UK403":
+                mbfBot.send("testに人増えた")
+                break;
+        }
+
         loger.log("join Member", message);
         var isSelf = false;
         snedMemberInfo(message, true);
