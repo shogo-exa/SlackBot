@@ -101,42 +101,46 @@ mbfBot.dialog("Report", [
 var slack = new WebClient(process.env.SLACK_BOT_TOKEN);
 
 mbfBot.on('conversationUpdate', function (message) {
+    const CHANNEL_ID_GENERAL = process.env.CHANNEL_ID_GENERAL;
+    const CHANNEL_ID_RANDOM = process.env.CHANNEL_ID_RANDOM;
+    const CHANNEL_ID_PROGRES = process.env.CHANNEL_ID_PROGRES;
     if (message.membersAdded) {
         var reply = new builder.Message()
             .address(message.address)
 
         switch (message.sourceEvent.SlackMessage.event.channel) {
-            case "C75NK5EG3":
+            case CHANNEL_ID_GENERAL:
                 reply.text("generalに人増えた");
                 mbfBot.send(reply);
                 break;
-            case "C75NK5ERZ":
+            case CHANNEL_ID_RANDOM:
                 reply.text("randomに人増えた");
                 mbfBot.send(reply);
                 break;
-            case "C770UK403":
-                reply.text("testに人増えた");
+            case CHANNEL_ID_PROGRES:
+                reply.text("progresに人増えた");
                 mbfBot.send(reply);
                 break;
+            default: // 各講座チャネルへ人が追加された
+                var isSelf = false;
+                snedMemberInfo(message, message.membersAdded, true);
+                var membersAdded = message.membersAdded
+                    .map((m) => {
+                        if (m.id === message.address.bot.id.split(":")[0]) {
+                            isSelf = true;
+                        }
+                        return m.name
+                    });
+                loger.log("members", membersAdded);
+                if (!isSelf && membersAdded) {
+                    reply.text('いらっしゃいませー ' + membersAdded + ' さん');
+                    mbfBot.send(reply);
+                    reply.text("講座に関する質問は各チャネルにしてください")
+                    mbfBot.send(reply)
+                }
         }
 
         loger.log("join Member", message);
-        var isSelf = false;
-        snedMemberInfo(message, message.membersAdded, true);
-        var membersAdded = message.membersAdded
-            .map((m) => {
-                if (m.id === message.address.bot.id.split(":")[0]) {
-                    isSelf = true;
-                }
-                return m.name
-            });
-        loger.log("members", membersAdded);
-        if (!isSelf && membersAdded) {
-            reply.text('いらっしゃいませー ' + membersAdded + ' さん');
-            mbfBot.send(reply);
-            reply.text("講座に関する質問は各チャネルにしてください")
-            mbfBot.send(reply)
-        }
     }
     if (message.membersRemoved) {
         loger.log("leave Member", message);
